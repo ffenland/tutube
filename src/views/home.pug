@@ -1,0 +1,13 @@
+extends base.pug
+//- base need 1 variable = pageTitle
+include mixins/video
+
+
+
+block content 
+    h2 Welcome here you will see trending videos
+    ul
+        each video in videos
+            +video(video)
+        else
+            li Sorry nothing is trending.

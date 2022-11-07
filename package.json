@@ -1,0 +1,32 @@
+{
+  "name": "tutube",
+  "version": "1.0.0",
+  "description": "Youtube clone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec babel-node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ffenland/tutube.git"
+  },
+  "author": "ffenland",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ffenland/tutube/issues"
+  },
+  "homepage": "https://github.com/ffenland/tutube#readme",
+  "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/node": "^7.20.0",
+    "@babel/preset-env": "^7.19.4",
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.7.1",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
+  }
+}
