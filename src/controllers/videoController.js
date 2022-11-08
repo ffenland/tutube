@@ -1,14 +1,16 @@
-import { fakeVideos } from "../data/videos";
+import Video from "../models/Video";
 
-let videos = [...fakeVideos];
-
-export const trending = (req, res) => {
-  res.render("home", { pageTitle: "Home", videos });
+export const home = async (req, res) => {
+  try {
+    const videos = await Video.find({});
+    return res.render("home", { pageTitle: "Home", videos });
+  } catch (error) {
+    return res.render("server-error");
+  }
 };
-export const watch = (req, res) => {
+export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = videos[id - 1];
-
+  const video = await Video.findById(id);
   res.render("watch", { pageTitle: `Watching ${video.title}`, video });
 };
 export const getEdit = (req, res) => {
@@ -26,16 +28,20 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
   res.render("upload", { pageTitle: "Upload" });
 };
-export const postUpload = (req, res) => {
-  const { title } = req.body;
-  const newVideo = {
-    title,
-    createdAt: "2 minutes ago",
-    rating: 0,
-    comments: 0,
-    views: 0,
-    id: videos.length + 1,
-  };
-  videos.push(newVideo);
-  res.redirect("/");
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  try {
+    await Video.create({
+      title,
+      description,
+      hashtags: hashtags.split(",").map((word) => `#${word}`),
+    });
+    return res.redirect("/");
+  } catch (error) {
+    console.log(error);
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
 };

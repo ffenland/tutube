@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://127.0.0.1:27017/tutube");
+mongoose.connect(
+  "mongodb+srv://ffenland:nomadstudy@nomadffen.zttasek.mongodb.net/tutube?retryWrites=true&w=majority"
+);
 
 const db = mongoose.connection;
 

@@ -7,7 +7,7 @@ const globalRouter = Router();
 const handleHome = (req, res, next) => {
   res.render("home");
 };
-globalRouter.get("/", videoController.trending);
+globalRouter.get("/", videoController.home);
 globalRouter.get("/join", userController.signup);
 globalRouter.get("/login", userController.login);
 
