@@ -11,5 +11,6 @@ router
   .route("/:id([0-9a-f]{24})/edit")
   .get(videoController.getEdit)
   .post(videoController.postEdit);
+router.route("/:id([0-9a-f]{24})/delete").get(videoController.deleteVideo);
 
 export default router;

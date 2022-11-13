@@ -1,8 +1,7 @@
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-
-mongoose.connect(
-  "mongodb+srv://ffenland:nomadstudy@nomadffen.zttasek.mongodb.net/tutube?retryWrites=true&w=majority"
-);
+dotenv.config();
+mongoose.connect(process.env.DB_URL);
 
 const db = mongoose.connection;
 

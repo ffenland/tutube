@@ -1,0 +1,18 @@
+extends base
+
+block content 
+
+    form(method="POST")
+        if errorMessage
+            span=errorMessage
+        input(type="email" name="email" requierd placeholder="Email")
+        input(type="text" name="username" requierd placeholder="Username")
+        input(type="password" name="password" requierd placeholder="Password")
+        input(type="password" name="password2" requierd placeholder="Re-Password")
+        input(type="text" name="name" requierd placeholder="Name")
+        input(type="text" name="location" requierd placeholder="Location")
+        input(type="submit" value="Sign Up")
+    hr
+    div 
+        span Already have an account? 
+        a(href="/login") Login now &rarr;

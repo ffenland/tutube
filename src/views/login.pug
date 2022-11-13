@@ -1,0 +1,14 @@
+extends base 
+
+block content
+    if errorMessage
+            span=errorMessage
+    form(method="POST")
+        input(type="text" name="username" placeholder="Username" requierd)
+        input(type="password" name="password" placeholder="Password" requierd)
+        input(type='submit' value='login')
+
+    hr
+    div 
+        span Don't have an account? 
+        a(href="/signup") Create account &rarr;
