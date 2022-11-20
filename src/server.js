@@ -3,10 +3,10 @@ import morgan from "morgan";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
-import rootRouter from "./routers/rootRouter";
-import userRouter from "./routers/userRouter";
-import videoRouter from "./routers/videoRouter";
-import { localsMiddleware } from "./middlewares";
+import rootRouter from "./routers/rootRouter.js";
+import userRouter from "./routers/userRouter.js";
+import videoRouter from "./routers/videoRouter.js";
+import { localsMiddleware } from "./middlewares.js";
 
 const app = express();
 
@@ -36,9 +36,8 @@ app.use(localsMiddleware);
 //     next();
 //   });
 // });
-app.get("/add-one", (req, res, next) => {
-  return res.send(`${req.session.id}`);
-});
+app.use("/uploads", express.static("uploads"));
+app.use("/static", express.static("assets"));
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);
