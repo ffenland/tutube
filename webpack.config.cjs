@@ -3,11 +3,14 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   // entry means SourceCode
-  entry: "./src/client/js/main.js",
+  entry: {
+    main: "./src/client/js/main.js",
+    videoPlayer: "./src/client/js/videoPlayer.js",
+  },
   mode: "development",
   watch: true,
   output: {
-    filename: "js/main.js",
+    filename: "js/[name].js", // name = entry에 넘겨준 Object의 Key
     path: path.resolve(__dirname, "assets"),
     clean: true,
   },

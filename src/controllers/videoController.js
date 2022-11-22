@@ -3,7 +3,9 @@ import User from "../models/User.js";
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({}).sort({ createdAt: "desc" });
+    const videos = await Video.find({})
+      .sort({ createdAt: "desc" })
+      .populate({ path: "owner" });
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     return res.render("server-error");
@@ -65,11 +67,11 @@ export const getUpload = (req, res) => {
 };
 export const postUpload = async (req, res) => {
   const {
-    file: { path },
     session: {
       user: { _id },
     },
     body: { title, description, hashtags },
+    file: { path },
   } = req;
 
   try {
@@ -118,7 +120,7 @@ export const search = async (req, res) => {
       title: {
         $regex: new RegExp(`${keyword}`, "i"),
       },
-    });
+    }).populate("owner");
     return res.render("search", { pageTitle: "Search", videos });
   }
   return res.render("search", { pageTitle: "Search", videos: [] });

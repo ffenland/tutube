@@ -7,11 +7,7 @@ block content
         input(type="text" name="username" placeholder="Username" requierd)
         input(type="password" name="password" placeholder="Password" requierd)
         input(type='submit' value='login')
-    br
-    div 
-        a(href="/users/github/start") Continue with Github &rarr;
-
-    hr
-    div 
+        include partials/social-login 
+    div.auth-switch 
         span Don't have an account? 
         a(href="/signup") Create account &rarr;
