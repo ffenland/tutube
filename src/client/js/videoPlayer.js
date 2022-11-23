@@ -101,12 +101,23 @@ const handleSpaceBar = (e) => {
     handlePlayClick();
   }
 };
+const handleEnded = (e) => {
+  console.log("e", e);
+  console.log("id", videoContainer.dataset);
+  const { videoid } = videoContainer.dataset;
+  fetch(`/api/videos/${videoid}/view`, {
+    method: "POST",
+  });
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadeddata", handleLoadedMetadata);
 video.addEventListener("timeupdate", handleTimeUpdate);
 video.addEventListener("click", handleVideoClick);
+video.addEventListener("ended", handleEnded);
+
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 timeline.addEventListener("input", handleTimelineChange);
