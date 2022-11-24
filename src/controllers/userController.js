@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 
 export const logout = (req, res) => {
   req.session.destroy();
+
   return res.redirect("/");
 };
 export const getEdit = (req, res) => {
@@ -63,6 +64,7 @@ export const postChangePassword = async (req, res) => {
   user.password = new1;
   // 위 상태로 멈추면 저장도 안되고 비번이 hash가 안됨.
   await user.save();
+  req.flash("info", "Password updated!");
   // 다되면 강제로 로그아웃 시키기.. 세션도 파괴한다.
   req.session.destroy();
   return res.redirect("/login");
@@ -77,6 +79,7 @@ export const see = async (req, res) => {
     },
   });
   if (!user) {
+    req.flash("error", "No users");
     return res.status(404).render("404", { pageTitle: "User not found!" });
   }
 

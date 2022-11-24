@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import morgan from "morgan";
 import session from "express-session";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 
 import rootRouter from "./routers/rootRouter.js";
@@ -30,7 +31,10 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })
 );
+app.use(flash()); //req.flash("key","message")
+// 이는 req.locals.messages 에 들어간다.
 app.use(localsMiddleware);
+
 // app.use((req, res, next) => {
 //   req.sessionStore.all((error, sessions) => {
 //     console.log(sessions);
