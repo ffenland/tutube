@@ -16,7 +16,12 @@ let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
+<<<<<<< HEAD
 let isPlaying = false;
+=======
+
+let isSeeking = false;
+>>>>>>> 8c13d23f644b9a8045acef37ff4757b1c8682547
 const handlePlayClick = (e) => {
   if (video.paused) {
     video.play();
