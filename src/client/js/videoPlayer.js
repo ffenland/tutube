@@ -16,12 +16,7 @@ let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
-<<<<<<< HEAD
 let isPlaying = false;
-=======
-
-let isSeeking = false;
->>>>>>> 8c13d23f644b9a8045acef37ff4757b1c8682547
 const handlePlayClick = (e) => {
   if (video.paused) {
     video.play();
@@ -111,8 +106,11 @@ const handleMouseLeave = () => {
 const handleVideoClick = (e) => {
   handlePlayClick();
 };
-const handleSpaceBar = (e) => {
-  if (e.code === "Space") {
+
+const handleKeydown = (e) => {
+  if (e.key === " " && e.target === document.body) {
+    // e.target === document.body 인 경우에만 작동하면 textarea에 입력했을때 발생하는 bubbling을 막을 수 있다.
+    e.preventDefault();
     handlePlayClick();
   }
 };
@@ -125,8 +123,8 @@ const handleEnded = (e) => {
 };
 
 video.readyState
-  ? handleMetadata()
-  : video.addEventListener("loadedmetadata", handleMetadata);
+  ? handleLoadedMetadata()
+  : video.addEventListener("loadedmetadata", handleLoadedMetadata);
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
@@ -141,4 +139,4 @@ videoContainer.addEventListener("mouseleave", handleMouseLeave);
 timeline.addEventListener("input", handleTimelineChange);
 timeline.addEventListener("change", handleTimelineChangeEnd);
 fullScreenBtn.addEventListener("click", handleFullscreen);
-document.addEventListener("keypress", handleSpaceBar);
+document.addEventListener("keypress", handleKeydown);

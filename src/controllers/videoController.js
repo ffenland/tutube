@@ -1,5 +1,6 @@
 import Video, { formatHashtags } from "../models/Video.js";
 import User from "../models/User.js";
+import Comment from "../models/Comment.js";
 
 export const home = async (req, res) => {
   try {
@@ -13,7 +14,7 @@ export const home = async (req, res) => {
 };
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner");
+  const video = await Video.findById(id).populate("owner").populate("comments");
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
@@ -137,4 +138,27 @@ export const registerView = async (req, res) => {
   video.meta.views = video.meta.views + 1;
   await video.save();
   return res.sendStatus(200);
+};
+
+export const writeComment = async (req, res) => {
+  const {
+    body: { comment },
+    params: { id },
+    session: {
+      user: { _id },
+    },
+  } = req;
+
+  const video = await Video.findById(id);
+  if (!video) {
+    res.sendStatus(404);
+  }
+  const dbComment = await Comment.create({
+    text: comment,
+    owner: _id,
+    video: id,
+  });
+  video.comments.push(dbComment._id);
+  video.save();
+  res.status(201).json({ newCommentId: dbComment._id });
 };

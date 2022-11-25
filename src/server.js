@@ -18,6 +18,8 @@ app.set("views", `${process.cwd()}/src/views`);
 app.use(morgan("tiny"));
 // express가 form의 데이터를 다루게 하기 위함.
 app.use(express.urlencoded({ extended: true }));
+// json형태의 body를 파싱하자.
+app.use(express.json());
 
 //session
 app.use(
