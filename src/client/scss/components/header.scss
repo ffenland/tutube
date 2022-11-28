@@ -1,24 +1,58 @@
 header {
-  padding: 20px 50px;
+  padding: 0px 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   .header__logo {
-    color: $red;
+    color: $pink;
     font-size: 38px;
+    margin-bottom: 10px;
   }
-  ul {
+  .header__search {
     display: flex;
-    justify-content: space-between;
+    position: relative;
+    align-items: center;
+    width: 60%;
+    .header__search__form {
+      width: 100%;
+      max-width: none;
+      border: none;
+      padding: 30px;
+      input {
+        all: unset;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: black;
+        margin-bottom: 5px;
+        font-size: 16px;
+        color: white;
+        width: 90%;
+      }
+      button {
+        all: unset;
+      }
+      button {
+        position: absolute;
+        right: 92px;
+        top: 42px;
+        font-size: 24px;
+        background-color: rgba(0, 0, 0, 0);
+        text-align: center;
+        cursor: pointer;
+      }
+    }
+  }
+  .header__menu {
+    display: flex;
     align-items: center;
     li {
-      margin-left: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    i {
-      font-size: 16px;
+      margin: 0 10px;
+      .header__avatar {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+      }
     }
   }
   .header__btn {
@@ -26,10 +60,5 @@ header {
     color: $bg;
     padding: 5px 10px;
     border-radius: 5px;
-  }
-  .header__avatar {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
   }
 }

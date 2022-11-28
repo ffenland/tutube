@@ -3,12 +3,24 @@ import User from "../models/User.js";
 import Comment from "../models/Comment.js";
 
 export const home = async (req, res) => {
+  const { category } = req.query;
   try {
-    const videos = await Video.find({})
-      .sort({ createdAt: "desc" })
-      .populate({ path: "owner" });
+    let videos;
+    if (category) {
+      videos = await Video.find({
+        hashtags: `#${category}`,
+      })
+        .sort({ createdAt: "desc" })
+        .populate({ path: "owner" });
+    } else {
+      videos = await Video.find({})
+        .sort({ createdAt: "desc" })
+        .populate({ path: "owner" });
+    }
+
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
+    console.log(error);
     return res.render("server-error");
   }
 };

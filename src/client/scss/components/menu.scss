@@ -1,0 +1,21 @@
+.menu {
+  min-width: 250px;
+  height: 100%;
+  margin-right: 50px;
+  li {
+    border-radius: 10px;
+    padding: 20px 10px;
+    font-size: 16px;
+    &:hover {
+      background-color: rgb(59, 59, 59);
+    }
+    a {
+      display: flex;
+      align-items: center;
+      i {
+        width: 45px;
+        font-size: 28px;
+      }
+    }
+  }
+}
