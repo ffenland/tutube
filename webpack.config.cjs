@@ -11,8 +11,6 @@ module.exports = {
     recorder: BASE_JS + "recorder.js",
     commentSection: BASE_JS + "commentSection.js",
   },
-  mode: "development",
-  watch: true,
   output: {
     filename: "js/[name].js", // name = entry에 넘겨준 Object의 Key
     path: path.resolve(__dirname, "assets"),
