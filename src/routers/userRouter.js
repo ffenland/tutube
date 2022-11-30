@@ -29,7 +29,27 @@ router.get(
   publicOnlyMiddleware,
   userController.callbackGithubLogin
 );
-router.get("/testusermaker", userController.testUserMaker);
+router.get(
+  "/kakao/start",
+  publicOnlyMiddleware,
+  userController.startKakaoLogin
+);
+router.get(
+  "/kakao/callback",
+  publicOnlyMiddleware,
+  userController.callbackKakaoLogin
+);
+router.get(
+  "/naver/start",
+  publicOnlyMiddleware,
+  userController.startNaverLogin
+);
+router.get(
+  "/naver/callback",
+  publicOnlyMiddleware,
+  userController.callbackNaverLogin
+);
+
 router.get("/:id", userController.see);
 
 export default router;

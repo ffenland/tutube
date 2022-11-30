@@ -231,15 +231,156 @@ export const callbackGithubLogin = async (req, res) => {
   }
 };
 
-export const testUserMaker = async (req, res) => {
-  const rdnb = Math.floor(Math.random() * 99) + 10;
-  const user = await User.create({
-    email: `ffen${rdnb}@ffen.com`,
-    username: `ffen${rdnb}`,
-    name: "ffen",
-    location: "asd",
-    socialType: ["he", "ahe", "sad"],
-  });
-  console.log(user);
-  res.end();
+export const startKakaoLogin = (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+  const config = {
+    client_id: process.env.KAKAO_CL_ID,
+    redirect_uri: process.env.KAKAO_REDIRECT_URI,
+    response_type: "code",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+
+  return res.redirect(finalUrl);
+};
+
+export const callbackKakaoLogin = async (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.KAKAO_CL_ID,
+    client_secret: process.env.KAKAO_SECRET,
+    redirect_uri: process.env.KAKAO_REDIRECT_URI,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    // access api
+    const { access_token } = tokenRequest;
+    const apiUrl = "https://kapi.kakao.com/v2/user/me";
+    const userData = await (
+      await fetch(`${apiUrl}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+    if (
+      !userData.kakao_account.email ||
+      !userData.kakao_account.is_email_verified
+    ) {
+      req.flash("error", "Your Kakao account has no verified Email");
+      return res.redirect("/login");
+    }
+    const {
+      email,
+      profile: { thumbnail_image_url, nickname },
+    } = userData.kakao_account;
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name: nickname,
+        avatarUrl: thumbnail_image_url,
+        username: nickname,
+        email: email,
+        location: "",
+        socialOnly: true,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+  } else {
+    // access_token 에러
+    req.flash("error", "Kakao token error");
+    return res.redirect("/login");
+  }
+};
+
+export const startNaverLogin = (req, res) => {
+  const baseUrl = "https://nid.naver.com/oauth2.0/authorize";
+  const config = {
+    client_id: process.env.NAVER_CL_ID,
+    redirect_uri: process.env.NAVER_REDIRECT_URI,
+    state: process.env.NAVER_STATE,
+    response_type: "code",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+
+  return res.redirect(finalUrl);
+};
+
+export const callbackNaverLogin = async (req, res) => {
+  if (req.query.state !== process.env.NAVER_STATE) {
+    req.flash("error", "Unusual approach, 한번만 더 그럼 차단함.");
+
+    return res.redirect("/login");
+  }
+  const baseUrl = "https://nid.naver.com/oauth2.0/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.NAVER_CL_ID,
+    client_secret: process.env.NAVER_SECRET,
+    redirect_uri: process.env.NAVER_REDIRECT_URI,
+    code: req.query.code,
+    state: req.query.state,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        "X-Naver-Client-Id": process.env.NAVER_CL_ID,
+        "X-Naver-Client-Secret": process.env.NAVER_SECRET,
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    // access api
+    const { access_token } = tokenRequest;
+    const apiUrl = "https://openapi.naver.com/v1/nid/me";
+    const userData = await (
+      await fetch(`${apiUrl}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+    if (userData.message !== "success") {
+      req.flash("error", "Your Naver account login failed");
+      return res.redirect("/login");
+    }
+    const { email, nickname, profile_image, name } = userData.response;
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name: name,
+        avatarUrl: profile_image,
+        username: nickname || name,
+        email: email,
+        location: "",
+        socialOnly: true,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+  } else {
+    // access_token 에러
+    req.flash("error", "Kakao token error");
+    return res.redirect("/login");
+  }
 };
