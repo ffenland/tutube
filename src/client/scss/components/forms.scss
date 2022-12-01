@@ -27,10 +27,14 @@ input:not(input[type="range"]) {
 input[type="submit"],
 .social__btn {
   border-radius: 5px;
-  padding: 12px 20px;
-  background-color: white;
+  padding: 5px 20px;
+  background-color: transparent;
   color: rgba($color: $red, $alpha: 1);
   text-align: center;
   cursor: pointer;
   display: block;
+  img {
+    width: 90%;
+    object-fit: contain;
+  }
 }

@@ -43,8 +43,12 @@ app.use(localsMiddleware);
 //     next();
 //   });
 // });
+
+//public
+
 app.use("/uploads", express.static("uploads"));
 app.use("/static", express.static("assets"));
+app.use("/public", express.static("src/public"));
 
 app.use("/", rootRouter);
 app.use("/api", apiRouter);
