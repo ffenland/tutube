@@ -7,15 +7,15 @@ block content
         video#preview
         button#startBtn Start Recording
         button#retryBtn Retry
-    form(method="POST" enctype="multipart/form-data")
+    form(method="POST" enctype="multipart/form-data")#uploadForm
         label Video File
-            input(name="video" type="file" accept="video/*" required)
+            input(name="video" type="file" accept="video/*" required)#uploadFile
         label Thumbnail File
             input(name="thumb" type="file" accept="image/*" required)
         input(placeholder="Title" required name="title" type="text" maxLength=80)
         input(placeholder="Description" required name="description" type="text" minLength=10)
         input(placeholder="Hashtags separated by comma" required name="hashtags" type="text")
-        input(type="submit" value="Upload Video")
+        input(type="submit" value="Upload Video")#uploadSubmit
 
 block scripts 
     script(src="/static/js/recorder.js") 

@@ -1,5 +1,6 @@
 import express, { json } from "express";
 import morgan from "morgan";
+
 import session from "express-session";
 import flash from "express-flash";
 import MongoStore from "connect-mongo";
@@ -15,6 +16,12 @@ const app = express();
 //Middlewares
 app.set("view engine", "pug");
 app.set("views", `${process.cwd()}/src/views`);
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+
 app.use(morgan("tiny"));
 // express가 form의 데이터를 다루게 하기 위함.
 app.use(express.urlencoded({ extended: true }));

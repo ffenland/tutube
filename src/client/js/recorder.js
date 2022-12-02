@@ -4,6 +4,9 @@ const recorderDiv = document.querySelector(".recorder");
 const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 const retryBtn = document.getElementById("retryBtn");
+const uploadInput = document.getElementById("uploadFile");
+const uploadSubmit = document.getElementById("uploadSubmit");
+const uploadForm = document.getElementById("uploadForm");
 
 let stream;
 let recorder;
@@ -126,5 +129,43 @@ const init = async () => {
   }
 };
 init();
+
+let thumbnailFile;
+const handleInputChange = async (e) => {
+  //썸네일이 만들어지기 전까지 Submit button disable
+  uploadSubmit.disabled = true;
+  const file = uploadInput.files[0];
+  const ffmpeg = createFFmpeg({ log: true });
+  await ffmpeg.load();
+  // blob url에 fetch한다?
+  ffmpeg.FS("writeFile", file.name, await fetchFile(file));
+  // -i = input
+
+  await ffmpeg.run(
+    "-i",
+    file.name,
+    "-ss",
+    "00:00:50",
+    "-frames:v",
+    "1",
+    "thumbnail.jpg"
+  );
+  let files = ffmpeg.FS("readdir", "/");
+  console.log(files);
+  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+  // const jpgBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
+  // const thumbUrl = URL.createObjectURL(jpgBlob);
+  // console.log(thumbUrl);
+  uploadSubmit.disabled = false;
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  console.log(e);
+};
+
 startBtn.addEventListener("click", handleStart);
 retryBtn.addEventListener("click", handleRetry);
+
+uploadInput.addEventListener("change", handleInputChange);
+uploadForm.addEventListener("submit", handleSubmit);
