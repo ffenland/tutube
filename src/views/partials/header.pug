@@ -16,12 +16,10 @@ header
 			li
 				a(href="/users/edit")
 					if loggedInUser.avatarUrl === ""
-						span #{loggedInUser.username[0]}
+						div.header__initial
+							span #{loggedInUser.email[0].toUpperCase()}
 					else 
-						if loggedInUser.socialOnly
-							img.header__avatar(src=loggedInUser.avatarUrl crossorigin )
-						else
-							img.header__avater(src="/" + loggedInUser.avatarUrl)
+						img.header__avatar(src=loggedInUser.avatarUrl crossorigin )
 			li
 				a(href="/users/logout")  Log Out
 			

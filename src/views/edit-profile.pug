@@ -5,11 +5,9 @@ block content
         label Avatar Change
             input(type="file" name="avatar" accept="image/*")
         input(type="email" name="email"  placeholder="Email" required value=loggedInUser.email)
-        input(type="text" name="username"  placeholder="Username" required value=loggedInUser.username)
         input(type="text" name="name"  placeholder="Name" required value=loggedInUser.name)
-        input(type="text" name="location"  placeholder="Location" required value=loggedInUser.location)
         input(type="submit" value="Update Profile")
-        if !loggedInUser.socialOnly
+        if !loggedInUser.socialType === "credential"
             div.edit-profile__password
                 a(href="change-password") Change Password &rarr;
     

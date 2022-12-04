@@ -6,5 +6,15 @@ block content
     form(method="POST")
         input(type="text" name="title" placeholder="Video Title" value=video.title required)
         input(placeholder="Description" required name="description" type="text" minLength=20 value=video.description)
+        div#formRadioDiv
+            label
+                input(type="radio" name="category" value="cook" checked)
+                span Cook
+            label
+                input(type="radio" name="category" value="eat")
+                span Eat
+            label
+                input(type="radio" name="category" value="fun")
+                span Fun
         input(placeholder="Hashtags separated by comma" required name="hashtags" type="text" value=video.hashtags.join())
         input(type="submit" value="Save")

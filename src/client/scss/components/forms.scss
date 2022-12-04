@@ -9,7 +9,7 @@ form {
   }
 }
 
-input:not(input[type="range"]) {
+input:not(input[type="range"]):not(input[type="radio"]) {
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;
@@ -24,6 +24,11 @@ input:not(input[type="range"]) {
   }
 }
 
+input[type="submit"] {
+  color: $pink !important;
+  cursor: pointer !important;
+}
+
 input[type="submit"],
 .social__btn {
   border-radius: 5px;
@@ -36,5 +41,27 @@ input[type="submit"],
   img {
     width: 90%;
     object-fit: contain;
+  }
+}
+
+#formRadioDiv {
+  display: flex;
+  label {
+    font-size: 18px;
+    padding: 5px;
+    display: flex;
+  }
+  span {
+    padding: 5px;
+  }
+  input[type="radio"] {
+    appearance: none;
+    border: max(2px, 0.1rem) solid $pink;
+    border-radius: 50%;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  input[type="radio"]:checked {
+    border: 0.4rem solid $pink;
   }
 }

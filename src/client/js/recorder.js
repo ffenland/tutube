@@ -6,11 +6,17 @@ const video = document.getElementById("preview");
 const retryBtn = document.getElementById("retryBtn");
 const uploadInput = document.getElementById("uploadFile");
 const uploadSubmit = document.getElementById("uploadSubmit");
+const uploadThumb = document.getElementById("uploadThumbnail");
 const uploadForm = document.getElementById("uploadForm");
+
+// 자동 썸네일 기능이 작동하는 것을 보여주기 위해
+// 썸네일 인풋을 살려두었습니다.
 
 let stream;
 let recorder;
 let videoFile;
+let timeoutId;
+let countdown;
 
 const files = {
   input: "recording.webm",
@@ -41,7 +47,7 @@ const handleDownload = async () => {
     "-i",
     files.input,
     "-ss",
-    "00:00:50",
+    "00:00:01",
     "-frames:v",
     "1",
     files.thumb
@@ -65,15 +71,16 @@ const handleDownload = async () => {
   URL.revokeObjectURL(thumbUrl);
   URL.revokeObjectURL(videoFile);
 
-  startBtn.disabled = false;
-  startBtn.innerText = "Record Again";
-  startBtn.addEventListener("click", handleStart);
+  startBtn.innerText = "Done";
+  startBtn.removeEventListener("click", handleDownload);
 };
 
 const handleStop = () => {
   startBtn.innerText = "Download Recording";
   startBtn.removeEventListener("click", handleStop);
   startBtn.addEventListener("click", handleDownload);
+  clearInterval(countdown);
+  clearTimeout(timeoutId);
   recorder.stop();
   const tracks = stream.getTracks();
   tracks.forEach((track) => {
@@ -83,12 +90,10 @@ const handleStop = () => {
 };
 
 const handleStart = () => {
-  console.log("record started");
   startBtn.innerText = "Stop Recording";
   startBtn.removeEventListener("click", handleStart);
   startBtn.addEventListener("click", handleStop);
   recorder = new MediaRecorder(stream);
-  console.log("recorder1", recorder);
   recorder.ondataavailable = (e) => {
     videoFile = URL.createObjectURL(e.data);
     console.log("recording done!");
@@ -98,26 +103,46 @@ const handleStart = () => {
     video.src = videoFile;
     video.play();
   };
+  let count = 5;
+  countdown = setInterval(() => {
+    if (count === 0) {
+      clearInterval(countdown);
+    }
+    console.log("남은시간 : ", count);
+    count = count - 1;
+  }, 1000);
+  timeoutId = setTimeout(() => {
+    console.log("times up");
+    handleStop();
+  }, 6000);
+
   recorder.start();
-  console.log("recorder2", recorder);
 };
 
 const handleRetry = async () => {
   stream = await navigator.mediaDevices.getUserMedia({
     audio: true,
-    video: true,
+    video: {
+      width: { min: 1024, ideal: 1280, max: 1920 },
+      height: { min: 576, ideal: 720, max: 1080 },
+    },
   });
   startBtn.innerText = "Start Recording";
   startBtn.removeEventListener("click", handleDownload);
   startBtn.addEventListener("click", handleStart);
-  video.src = null;
+  startBtn.disabled = false;
+  video.srcObject = stream;
+  video.play();
 };
 
 const init = async () => {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: {
+        width: { min: 1024, ideal: 1280, max: 1920 },
+        height: { min: 576, ideal: 720, max: 1080 },
+      },
     });
     video.srcObject = stream;
     video.play();
@@ -130,10 +155,12 @@ const init = async () => {
 };
 init();
 
-let thumbnailFile;
 const handleInputChange = async (e) => {
-  //썸네일이 만들어지기 전까지 Submit button disable
+  // 썸네일이 만들어지기 전까지 Submit button disable
+  const thumbnailJpg = `thb${Date.now()}.jpg`;
+
   uploadSubmit.disabled = true;
+  uploadSubmit.innerText = "Reading File...";
   const file = uploadInput.files[0];
   const ffmpeg = createFFmpeg({ log: true });
   await ffmpeg.load();
@@ -145,27 +172,36 @@ const handleInputChange = async (e) => {
     "-i",
     file.name,
     "-ss",
-    "00:00:50",
+    "00:00:01",
     "-frames:v",
     "1",
-    "thumbnail.jpg"
+    thumbnailJpg
   );
   let files = ffmpeg.FS("readdir", "/");
   console.log(files);
-  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
-  // const jpgBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
+  const thumbFile = ffmpeg.FS("readFile", thumbnailJpg);
+  const jpgBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
   // const thumbUrl = URL.createObjectURL(jpgBlob);
-  // console.log(thumbUrl);
+  // downloadFile(thumbUrl, "tasdf.jpg");
+  const container = new DataTransfer();
+  const fileForAdd = new File([jpgBlob], thumbnailJpg, {
+    type: "image/jpeg",
+    lastModified: new Date().getTime(),
+  });
+  container.items.add(fileForAdd);
+  uploadThumb.files = container.files;
   uploadSubmit.disabled = false;
-};
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-  console.log(e);
+  uploadSubmit.innerText = "Upload Video";
 };
 
 startBtn.addEventListener("click", handleStart);
 retryBtn.addEventListener("click", handleRetry);
 
 uploadInput.addEventListener("change", handleInputChange);
-uploadForm.addEventListener("submit", handleSubmit);
+
+uploadForm.addEventListener("submit", (e) => {
+  console.log(e);
+  console.log(uploadForm);
+  console.log(uploadInput.value);
+  console.log(uploadThumb.value);
+});

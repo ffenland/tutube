@@ -10,9 +10,24 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET,
   },
 });
-const multerUploader = multerS3({
+const s3ImageUploader = multerS3({
   s3: s3,
   bucket: "pigstay",
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + file.originalname.slice(-4);
+    const fullPath = "images/" + newFileName;
+    ab_callback(null, fullPath);
+  },
+});
+
+const s3VideoUploader = multerS3({
+  s3: s3,
+  bucket: "pigstay",
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + file.originalname.slice(-4);
+    const fullPath = "videos/" + newFileName;
+    ab_callback(null, fullPath);
+  },
 });
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
@@ -43,12 +58,12 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3072000,
   },
-  storage: multerUploader,
+  storage: s3ImageUploader,
 });
 export const videoUpload = multer({
   dest: "uploads/videos",
   limits: {
     fileSize: 102400000,
   },
-  storage: multerUploader,
+  storage: s3VideoUploader,
 });

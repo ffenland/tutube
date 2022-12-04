@@ -49,7 +49,8 @@ router.get(
   publicOnlyMiddleware,
   userController.callbackNaverLogin
 );
-
+router.get("/history", userController.history);
+router.get("/favorite", userController.favorite);
 router.get("/:id", userController.see);
 
 export default router;

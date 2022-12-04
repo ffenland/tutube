@@ -11,9 +11,19 @@ block content
         label Video File
             input(name="video" type="file" accept="video/*" required)#uploadFile
         label Thumbnail File
-            input(name="thumb" type="file" accept="image/*" required)
+            input(name="thumb" type="file" accept="image/*" required)#uploadThumbnail
         input(placeholder="Title" required name="title" type="text" maxLength=80)
         input(placeholder="Description" required name="description" type="text" minLength=10)
+        div#formRadioDiv
+            label
+                input(type="radio" name="category" value="cook" checked)
+                span Cook
+            label
+                input(type="radio" name="category" value="eat")
+                span Eat
+            label
+                input(type="radio" name="category" value="fun")
+                span Fun
         input(placeholder="Hashtags separated by comma" required name="hashtags" type="text")
         input(type="submit" value="Upload Video")#uploadSubmit
 

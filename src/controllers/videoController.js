@@ -8,7 +8,7 @@ export const home = async (req, res) => {
     let videos;
     if (category) {
       videos = await Video.find({
-        hashtags: `#${category}`,
+        category,
       })
         .sort({ createdAt: "desc" })
         .populate({ path: "owner" });
@@ -21,16 +21,18 @@ export const home = async (req, res) => {
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.log(error);
-    return res.render("server-error");
+    return res.status(500).send("server-error");
   }
 };
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner").populate("comments");
+  const video = await Video.findById(id)
+    .populate("owner")
+    .populate({ path: "comments", populate: { path: "owner" } });
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
-
+  console.log(video.comments);
   return res.render("watch", {
     pageTitle: video.title,
     video,
@@ -84,18 +86,22 @@ export const postUpload = async (req, res) => {
     session: {
       user: { _id },
     },
-    body: { title, description, hashtags },
+    body: { title, description, hashtags, category },
     files: { video, thumb },
   } = req;
+  console.log(req.files);
+  console.log("-----");
+  console.log(thumb);
 
   try {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: video[0].path,
-      thumbnailUrl: thumb[0].path,
+      fileUrl: video[0].location,
+      thumbnailUrl: thumb[0].location,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
+      category,
     });
     const user = await User.findById(_id);
     user.videos.push(newVideo._id);
@@ -142,13 +148,18 @@ export const search = async (req, res) => {
 };
 
 export const registerView = async (req, res) => {
-  console.log("welcome");
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
     return res.sendStatus(404);
   }
   video.meta.views = video.meta.views + 1;
+  if (req.session.user) {
+    const { _id } = req.session.user;
+    const user = await User.findById(_id);
+    user.history.push(video._id);
+    await user.save();
+  }
   await video.save();
   return res.sendStatus(200);
 };
@@ -158,7 +169,7 @@ export const writeComment = async (req, res) => {
     body: { comment },
     params: { id },
     session: {
-      user: { _id },
+      user: { _id, email },
     },
   } = req;
 
@@ -173,5 +184,19 @@ export const writeComment = async (req, res) => {
   });
   video.comments.push(dbComment._id);
   video.save();
-  res.status(201).json({ newCommentId: dbComment._id });
+  res.status(201).json({ newCommentId: dbComment._id, writerEmail: email });
+};
+
+export const deleteComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const userId = req.session.user._id;
+  const comment = await Comment.findById(commentId)
+    .populate("owner")
+    .populate("video");
+  if (comment.owner._id.toString() !== userId) {
+    return res.status(404).json({ ok: false, message: "Authorization error" });
+  }
+  await Comment.findByIdAndDelete(commentId);
+
+  res.status(201).json({ ok: true, message: "Delete Success" });
 };

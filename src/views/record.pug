@@ -1,0 +1,15 @@
+extends base.pug
+//- base need 1 variable = pageTitle
+include mixins/video
+
+
+
+block content 
+    div.video-grid
+        each video in videos
+            +video(video)
+        else
+            if pageTitle === "Favorite"
+                span.empty__message Your Favorite list is Empty
+            else 
+                span.empty__message No videos watched yet.

@@ -34,7 +34,7 @@ header {
       }
       button {
         position: absolute;
-        right: 92px;
+        right: 110px;
         top: 42px;
         font-size: 24px;
         background-color: rgba(0, 0, 0, 0);
@@ -52,6 +52,15 @@ header {
         height: 30px;
         width: 30px;
         border-radius: 50%;
+      }
+      .header__initial {
+        height: 30px;
+        width: 30px;
+        border-radius: 9999px;
+        background-color: $pink;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   }
