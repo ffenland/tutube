@@ -130,7 +130,6 @@ const handleEnded = (e) => {
 };
 
 const handleHeartBtn = async () => {
-  if ((isLoggedIn = "false")) return;
   const { videoid } = videoContainer.dataset;
   const response = await fetch(`/api/videos/${videoid}/fav`, {
     method: "POST",
@@ -165,4 +164,6 @@ timeline.addEventListener("change", handleTimelineChangeEnd);
 fullScreenBtn.addEventListener("click", handleFullscreen);
 document.addEventListener("keypress", handleKeydown);
 
-heartBtn.addEventListener("click", handleHeartBtn);
+if (isLoggedIn === "true") {
+  heartBtn.addEventListener("click", handleHeartBtn);
+}
