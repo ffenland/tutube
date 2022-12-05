@@ -25,6 +25,7 @@ export const home = async (req, res) => {
   }
 };
 export const watch = async (req, res) => {
+  const { user } = req.session;
   const { id } = req.params;
   const video = await Video.findById(id)
     .populate("owner")
@@ -32,10 +33,14 @@ export const watch = async (req, res) => {
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
-  console.log(video.comments);
+  // isFav 추가
+  const isFav = String(
+    video.meta.favs.some((fav) => String(fav._id) === user._id)
+  );
   return res.render("watch", {
     pageTitle: video.title,
     video,
+    isFav,
   });
 };
 export const getEdit = async (req, res) => {
@@ -199,4 +204,41 @@ export const deleteComment = async (req, res) => {
   await Comment.findByIdAndDelete(commentId);
 
   res.status(201).json({ ok: true, message: "Delete Success" });
+};
+
+export const addFavorite = async (req, res) => {
+  try {
+    const {
+      params: { id },
+    } = req;
+    const userId = req.session.user._id;
+    const user = await User.findById(userId).populate("favs");
+
+    const video = await Video.findById(id).populate({
+      path: "meta",
+      populate: { path: "favs" },
+    });
+
+    if (user.favs.some((fav) => fav.equals(video._id))) {
+      // 기존 유저 favs에 video._id가 있다면 삭제해주긔
+      user.favs = user.favs.filter((fav) => !fav.equals(video._id));
+      user.save();
+      // video도 마찬가지
+      video.meta.favs = video.meta.favs.filter((fav) => !fav.equals(user._id));
+      video.save();
+      return res.status(201).json({ ok: true, result: "removed" });
+    } else {
+      // 기존 favs에 없다면 추가해주기.
+      user.favs.push(video._id);
+      user.save();
+      //혹시모르니 Video는 한번 삭제하고 추가하긔
+      video.meta.favs = video.meta.favs.filter((fav) => !fav.equals(user._id));
+      video.meta.favs.push(user._id);
+      video.save();
+      return res.status(201).json({ ok: true, result: "added" });
+    }
+  } catch (error) {
+    console.log("favError", error);
+    return res.status(404).josn({ ok: false, result: "error" });
+  }
 };

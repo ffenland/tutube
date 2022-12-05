@@ -11,12 +11,14 @@ const fullScreenBtn = document.getElementById("fullScreen");
 const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
-
+const heartBtn = document.querySelector(".video__data__section .fa-heart");
 let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 let isPlaying = false;
+let initialFav = videoContainer.dataset.isfav;
+
 const handlePlayClick = (e) => {
   if (video.paused) {
     video.play();
@@ -119,7 +121,24 @@ const handleEnded = (e) => {
   fetch(`/api/videos/${videoid}/view`, {
     method: "POST",
   });
+
   playBtnIcon.classList = "fas fa-play";
+};
+
+const handleHeartBtn = async () => {
+  const { videoid } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${videoid}/fav`, {
+    method: "POST",
+  });
+  const result = await response.json();
+  console.log(result);
+  if (initialFav === "false") {
+    heartBtn.style.color = "red";
+    initialFav = "true";
+  } else if (initialFav === "true") {
+    heartBtn.style.color = "#adadad";
+    initialFav = "false";
+  }
 };
 
 video.readyState
@@ -140,3 +159,5 @@ timeline.addEventListener("input", handleTimelineChange);
 timeline.addEventListener("change", handleTimelineChangeEnd);
 fullScreenBtn.addEventListener("click", handleFullscreen);
 document.addEventListener("keypress", handleKeydown);
+
+heartBtn.addEventListener("click", handleHeartBtn);

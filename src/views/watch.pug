@@ -2,7 +2,7 @@ extends base.pug
 
 
 block content
-    div#videoContainer(data-videoid=video._id)
+    div#videoContainer(data-videoid=video._id data-isfav=isFav)
         video(src=video.fileUrl crossorigin)
         div#videoControls.videoControls
             div.videoControls__play
@@ -21,10 +21,17 @@ block content
                 span#fullScreen
                     i.fas.fa-expand
     div.video__data
-        p.video__title=video.title
+        div.video__data__section
+            p.video__title=video.title
+            if isFav==="true"
+                i(style="color:red").fa-solid.fa-heart
+            else 
+                i(style="color:#adadad").fa-solid.fa-heart
         small.video__owner Uploaded by 
             a(href=`/users/${video.owner._id}`)=video.owner.name
         small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        div.video__description
+            p #{video.description}
         br
         if String(video.owner._id) === String(loggedInUser._id)
             a(href=`${video.id}/edit`) Edit Video &rarr;

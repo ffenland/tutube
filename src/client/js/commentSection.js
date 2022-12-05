@@ -1,6 +1,6 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
-const deleteBtn = document.querySelector(".deleteBtn");
+const deleteBtns = document.querySelectorAll(".deleteBtn");
 const ul = document.querySelector(".video__comment__list");
 
 const addComment = (string, id, email) => {
@@ -22,6 +22,7 @@ const addComment = (string, id, email) => {
   newComment_textDiv.appendChild(newComment__span);
   const newComment__deleteDiv = document.createElement("div");
   newComment__deleteDiv.className = "video__comment__delete";
+  newComment__deleteDiv.addEventListener("click", handleDelete);
   const newComment__button = document.createElement("button");
   newComment__button.innerText = "X";
   newComment__button.className = "deleteBtn";
@@ -75,6 +76,8 @@ const handleDelete = async (e) => {
     li.remove();
   }
 };
-if (deleteBtn) {
-  deleteBtn.addEventListener("click", handleDelete, false);
+if (deleteBtns.length > 0) {
+  deleteBtns.forEach((deleteBtn) =>
+    deleteBtn.addEventListener("click", handleDelete)
+  );
 }

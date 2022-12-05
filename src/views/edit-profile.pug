@@ -7,7 +7,7 @@ block content
         input(type="email" name="email"  placeholder="Email" required value=loggedInUser.email)
         input(type="text" name="name"  placeholder="Name" required value=loggedInUser.name)
         input(type="submit" value="Update Profile")
-        if !loggedInUser.socialType === "credential"
+        if loggedInUser.socialType === "credential"
             div.edit-profile__password
                 a(href="change-password") Change Password &rarr;
     

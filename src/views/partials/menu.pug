@@ -12,8 +12,12 @@ ul.menu
 			i.fa-solid.fa-ice-cream
 			span 배불배불
 	hr
-	li
-		a(href="/users/history")
-			i.fa-solid.fa-shoe-prints
-			span 나의 기록
-	
+	if loggedIn
+		li
+			a(href="/users/history")
+				i.fa-solid.fa-shoe-prints
+				span 영수증
+		li
+			a(href="/users/favorite")
+				i.fa-solid.fa-gift
+				span 냉장고

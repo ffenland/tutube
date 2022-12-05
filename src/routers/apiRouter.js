@@ -8,7 +8,7 @@ apiRouter.post(
   "/videos/:id([0-9a-f]{24})/comment",
   videoController.writeComment
 );
-
+apiRouter.post("/videos/:id([0-9a-f]{24})/fav", videoController.addFavorite);
 apiRouter.post(
   "/videos/:id([0-9a-f]{24})/commentdelete/:commentId([0-9a-f]{24})",
   videoController.deleteComment
