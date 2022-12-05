@@ -84,6 +84,15 @@
       text-decoration: underline;
     }
   }
+  .video__hashtags {
+    display: flex;
+    align-items: center;
+    .video__hashtag {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: rgb(19, 27, 43);
+    }
+  }
   .video__description {
     width: 100%;
     margin-top: 10px;
@@ -113,10 +122,17 @@
     }
     .video__comment__delete {
       padding: 2px;
-      cursor: pointer;
-      &:hover {
-        background-color: gray;
-        color: white;
+      button {
+        cursor: pointer;
+        font-weight: bold;
+        background-color: white;
+        border-color: transparent;
+        border-radius: 5px;
+        color: red;
+        &:hover {
+          background-color: rgb(189, 41, 41);
+          color: white;
+        }
       }
     }
   }

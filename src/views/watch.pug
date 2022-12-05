@@ -30,6 +30,10 @@ block content
         small.video__owner Uploaded by 
             a(href=`/users/${video.owner._id}`)=video.owner.name
         small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        div.video__hashtags
+            each hashtag in video.hashtags
+                div.video__hashtag
+                    span=hashtag
         div.video__description
             p #{video.description}
         br
