@@ -34,9 +34,10 @@ export const watch = async (req, res) => {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
   // isFav 추가
-  const isFav = String(
-    video.meta.favs.some((fav) => String(fav._id) === user._id)
-  );
+  let isFav = false;
+  if (user) {
+    isFav = String(video.meta.favs.some((fav) => String(fav._id) === user._id));
+  }
   return res.render("watch", {
     pageTitle: video.title,
     video,

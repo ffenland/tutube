@@ -21,12 +21,13 @@ block content
                 span#fullScreen
                     i.fas.fa-expand
     div.video__data
-        div.video__data__section
+        div.video__data__section(data-islog=`${loggedIn}`)
             p.video__title=video.title
-            if isFav==="true"
-                i(style="color:red").fa-solid.fa-heart
-            else 
-                i(style="color:#adadad").fa-solid.fa-heart
+            if loggedIn
+                if isFav==="true"
+                    i(style="color:red").fa-solid.fa-heart
+                else 
+                    i(style="color:#adadad").fa-solid.fa-heart
         small.video__owner Uploaded by 
             a(href=`/users/${video.owner._id}`)=video.owner.name
         small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})

@@ -12,6 +12,10 @@ const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 const heartBtn = document.querySelector(".video__data__section .fa-heart");
+const videoSection = document.querySelector(".video__data__section");
+
+const isLoggedIn = videoSection.dataset.islog;
+
 let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
@@ -126,6 +130,7 @@ const handleEnded = (e) => {
 };
 
 const handleHeartBtn = async () => {
+  if ((isLoggedIn = "false")) return;
   const { videoid } = videoContainer.dataset;
   const response = await fetch(`/api/videos/${videoid}/fav`, {
     method: "POST",
