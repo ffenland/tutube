@@ -67,9 +67,9 @@ export const postEdit = async (req, res) => {
     session: {
       user: { _id },
     },
-    body: { title, description, hashtags },
+    body: { title, description, hashtags, category },
   } = req;
-  const video = await Video.exists({ _id: id });
+  const video = await Video.findById(id);
   if (!video) {
     return res.render("404", { pageTitle: "Video not found" });
   }
@@ -80,6 +80,7 @@ export const postEdit = async (req, res) => {
     title,
     description,
     hashtags: formatHashtags(hashtags),
+    category,
   });
   return res.redirect(`/videos/${id}`);
 };
@@ -94,9 +95,6 @@ export const postUpload = async (req, res) => {
     body: { title, description, hashtags, category },
     files: { video, thumb },
   } = req;
-  console.log(req.files);
-  console.log("-----");
-  console.log(thumb);
 
   try {
     const newVideo = await Video.create({
